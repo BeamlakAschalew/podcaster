@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+import { computed } from 'vue';
 
 const form = useForm({
     name: '',
@@ -14,6 +15,24 @@ const form = useForm({
     password: '',
     password_confirmation: '',
 });
+
+// Compute the Google OAuth URL. Uses Ziggy route if available, otherwise falls back to a conventional endpoint.
+const googleAuthUrl = computed(() => {
+    try {
+        const r = (globalThis as any).route;
+        if (typeof r === 'function' && r().has && r().has('oauth.redirect')) {
+            return r('oauth.redirect', { provider: 'google' });
+        }
+    } catch {
+        // no-op, will use fallback
+    }
+    return '/auth/google/redirect';
+});
+
+// Redirect helper to avoid referencing `window` in the template
+const goToGoogle = () => {
+    window.location.href = googleAuthUrl.value;
+};
 
 const submit = () => {
     form.post(route('register'), {
@@ -72,11 +91,26 @@ const submit = () => {
                     <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
                     Create account
                 </Button>
+
+                <!-- Separator -->
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <span class="w-full border-t" />
+                    </div>
+                    <div class="relative flex justify-center text-xs uppercase">
+                        <span class="bg-background px-2 text-muted-foreground">Or</span>
+                    </div>
+                </div>
+
+                <!-- Sign up with Google -->
+                <Button type="button" variant="outline" class="w-full" :tabindex="6" @click="goToGoogle"
+                    ><img src="app_icons/google.png" class="h-4" alt="Google logo" /> Sign up with Google
+                </Button>
             </div>
 
             <div class="text-center text-sm text-muted-foreground">
                 Already have an account?
-                <TextLink :href="route('login')" class="underline underline-offset-4" :tabindex="6">Log in</TextLink>
+                <TextLink :href="route('login')" class="underline underline-offset-4" :tabindex="7">Log in</TextLink>
             </div>
         </form>
     </AuthBase>
