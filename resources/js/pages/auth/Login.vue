@@ -8,7 +8,6 @@ import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
-import { computed } from 'vue';
 
 defineProps<{
     status?: string;
@@ -21,18 +20,8 @@ const form = useForm({
     remember: false,
 });
 
-const googleAuthUrl = computed(() => {
-    try {
-        const r = (globalThis as any).route;
-        if (typeof r === 'function' && r().has && r().has('oauth.redirect')) {
-            return r('oauth.redirect', { provider: 'google' });
-        }
-    } catch {}
-    return '/auth/google/redirect';
-});
-
 const goToGoogle = () => {
-    window.location.href = googleAuthUrl.value;
+    location.assign(route('oauth.redirect', { provider: 'google' }));
 };
 
 const submit = () => {

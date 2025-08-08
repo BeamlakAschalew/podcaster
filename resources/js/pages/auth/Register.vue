@@ -7,7 +7,6 @@ import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
-import { computed } from 'vue';
 
 const form = useForm({
     name: '',
@@ -16,22 +15,8 @@ const form = useForm({
     password_confirmation: '',
 });
 
-// Compute the Google OAuth URL. Uses Ziggy route if available, otherwise falls back to a conventional endpoint.
-const googleAuthUrl = computed(() => {
-    try {
-        const r = (globalThis as any).route;
-        if (typeof r === 'function' && r().has && r().has('oauth.redirect')) {
-            return r('oauth.redirect', { provider: 'google' });
-        }
-    } catch {
-        // no-op, will use fallback
-    }
-    return '/auth/google/redirect';
-});
-
-// Redirect helper to avoid referencing `window` in the template
 const goToGoogle = () => {
-    window.location.href = googleAuthUrl.value;
+    location.assign(route('oauth.redirect', { provider: 'google' }));
 };
 
 const submit = () => {
