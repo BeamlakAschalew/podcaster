@@ -103,8 +103,8 @@ const submit = () => {
                 </div>
 
                 <!-- Sign up with Google -->
-                <Button type="button" variant="outline" class="w-full" :tabindex="6" @click="goToGoogle"
-                    ><img src="app_icons/google.png" class="h-4" alt="Google logo" /> Sign up with Google
+                <Button type="button" variant="outline" class="w-full" :tabindex="6" @click="goToGoogle">
+                    <img src="app_icons/google.png" class="h-4" alt="Google logo" /> Sign up with Google
                 </Button>
             </div>
 

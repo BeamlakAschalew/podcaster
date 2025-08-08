@@ -7,8 +7,8 @@ import { usePage } from '@inertiajs/vue3';
 import { ChevronsUpDown } from 'lucide-vue-next';
 import UserMenuContent from './UserMenuContent.vue';
 
-const page = usePage();
-const user = page.props.auth.user as User;
+const page = usePage<{ auth: { user: User } }>();
+const user = page.props.auth.user;
 const { isMobile, state } = useSidebar();
 </script>
 
