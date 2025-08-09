@@ -19,7 +19,6 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('topic');
             $table->string('tone');
-            $table->integer('status')->default(1);
             $table->string('duration_minutes')->nullable();
             $table->string('status')->default('draft');
             $table->boolean('file_uploaded')->default(false);

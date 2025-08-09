@@ -1,259 +1,398 @@
 <script setup lang="ts">
-import { Head, Link, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Head, Link } from '@inertiajs/vue3';
+import { ArrowRight, ChevronDown, Menu, Play, Podcast, Radio, Target, X, Zap } from 'lucide-vue-next';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
-const page = usePage();
-const isAuthenticated = computed(() => Boolean((page as any).props.auth?.user));
+// Auth presence (reuse prop from inertia)
+const props = defineProps<{ auth?: { user?: any } }>();
+const isAuthenticated = computed(() => Boolean(props.auth?.user));
+
+// Mobile menu & scroll state
+const mobileMenuOpen = ref(false);
+const scrollY = ref(0);
+
+const scrolled = computed(() => scrollY.value > 8);
+
+function toggleMobile() {
+    mobileMenuOpen.value = !mobileMenuOpen.value;
+}
+
+function closeMobile() {
+    mobileMenuOpen.value = false;
+}
+
+function onScroll() {
+    scrollY.value = window.scrollY;
+}
+
+onMounted(() => {
+    scrollY.value = window.scrollY;
+    window.addEventListener('scroll', onScroll, { passive: true });
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('scroll', onScroll);
+});
 </script>
 
 <template>
-    <Head title="Welcome">
+    <Head title="PodcastAI – Create AI Podcasts">
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>
-    <div class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
-        <header class="mb-6 w-full max-w-[335px] text-sm not-has-[nav]:hidden lg:max-w-4xl">
-            <nav class="flex items-center justify-end gap-4">
-                <Link
-                    v-if="isAuthenticated"
-                    :href="route('dashboard')"
-                    class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
-                >
-                    Dashboard
-                </Link>
-                <template v-else>
-                    <Link
-                        :href="route('login')"
-                        class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
-                    >
-                        Log in
-                    </Link>
-                    <Link
-                        :href="route('register')"
-                        class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
-                    >
-                        Register
-                    </Link>
-                </template>
-            </nav>
-        </header>
-        <div class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-            <main class="flex w-full max-w-[335px] flex-col-reverse overflow-hidden rounded-lg lg:max-w-4xl lg:flex-row">
-                <div
-                    class="flex-1 rounded-br-lg rounded-bl-lg bg-white p-6 pb-12 text-[13px] leading-[20px] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] lg:rounded-tl-lg lg:rounded-br-none lg:p-20 dark:bg-[#161615] dark:text-[#EDEDEC] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]"
-                >
-                    <h1 class="mb-1 font-medium">Let's get started</h1>
-                    <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">
-                        Laravel has an incredibly rich ecosystem. <br />We suggest starting with the following.
-                    </p>
-                    <ul class="mb-4 flex flex-col lg:mb-6">
-                        <li
-                            class="relative flex items-center gap-4 py-2 before:absolute before:top-1/2 before:bottom-0 before:left-[0.4rem] before:border-l before:border-[#e3e3e0] dark:before:border-[#3E3E3A]"
-                        >
-                            <span class="relative bg-white py-1 dark:bg-[#161615]">
-                                <span
-                                    class="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[#e3e3e0] bg-[#FDFDFC] shadow-[0px_0px_1px_0px_rgba(0,0,0,0.03),0px_1px_2px_0px_rgba(0,0,0,0.06)] dark:border-[#3E3E3A] dark:bg-[#161615]"
-                                >
-                                    <span class="h-1.5 w-1.5 rounded-full bg-[#dbdbd7] dark:bg-[#3E3E3A]" />
-                                </span>
-                            </span>
-                            <span>
-                                Read the
-                                <a
-                                    href="https://laravel.com/docs"
-                                    target="_blank"
-                                    class="ml-1 inline-flex items-center space-x-1 font-medium text-[#f53003] underline underline-offset-4 dark:text-[#FF4433]"
-                                >
-                                    <span>Documentation</span>
-                                    <svg
-                                        width="{10}"
-                                        height="{11}"
-                                        viewBox="0 0 10 11"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="h-2.5 w-2.5"
-                                    >
-                                        <path d="M7.70833 6.95834V2.79167H3.54167M2.5 8L7.5 3.00001" stroke="currentColor" stroke-linecap="square" />
-                                    </svg>
-                                </a>
-                            </span>
-                        </li>
-                        <li
-                            class="relative flex items-center gap-4 py-2 before:absolute before:top-0 before:bottom-1/2 before:left-[0.4rem] before:border-l before:border-[#e3e3e0] dark:before:border-[#3E3E3A]"
-                        >
-                            <span class="relative bg-white py-1 dark:bg-[#161615]">
-                                <span
-                                    class="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[#e3e3e0] bg-[#FDFDFC] shadow-[0px_0px_1px_0px_rgba(0,0,0,0.03),0px_1px_2px_0px_rgba(0,0,0,0.06)] dark:border-[#3E3E3A] dark:bg-[#161615]"
-                                >
-                                    <span class="h-1.5 w-1.5 rounded-full bg-[#dbdbd7] dark:bg-[#3E3E3A]" />
-                                </span>
-                            </span>
-                            <span>
-                                Watch video tutorials at
-                                <a
-                                    href="https://laracasts.com"
-                                    target="_blank"
-                                    class="ml-1 inline-flex items-center space-x-1 font-medium text-[#f53003] underline underline-offset-4 dark:text-[#FF4433]"
-                                >
-                                    <span>Laracasts</span>
-                                    <svg
-                                        width="{10}"
-                                        height="{11}"
-                                        viewBox="0 0 10 11"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="h-2.5 w-2.5"
-                                    >
-                                        <path d="M7.70833 6.95834V2.79167H3.54167M2.5 8L7.5 3.00001" stroke="currentColor" stroke-linecap="square" />
-                                    </svg>
-                                </a>
-                            </span>
-                        </li>
-                    </ul>
-                    <ul class="flex gap-3 text-sm leading-normal">
-                        <li>
-                            <a
-                                href="https://cloud.laravel.com"
-                                target="_blank"
-                                class="inline-block rounded-sm border border-black bg-[#1b1b18] px-5 py-1.5 text-sm leading-normal text-white hover:border-black hover:bg-black dark:border-[#eeeeec] dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:border-white dark:hover:bg-white"
-                            >
-                                Deploy now
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div
-                    class="relative -mb-px aspect-335/376 w-full shrink-0 overflow-hidden rounded-t-lg bg-[#fff2f2] lg:mb-0 lg:-ml-px lg:aspect-auto lg:w-[438px] lg:rounded-t-none lg:rounded-r-lg dark:bg-[#1D0002]"
-                >
-                    <svg
-                        class="w-full max-w-none translate-y-0 text-[#F53003] opacity-100 transition-all duration-750 dark:text-[#F61500] starting:translate-y-6 starting:opacity-0"
-                        viewBox="0 0 438 104"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path d="M17.2036 -3H0V102.197H49.5189V86.7187H17.2036V-3Z" fill="currentColor" />
-                        <path
-                            d="M110.256 41.6337C108.061 38.1275 104.945 35.3731 100.905 33.3681C96.8667 31.3647 92.8016 30.3618 88.7131 30.3618C83.4247 30.3618 78.5885 31.3389 74.201 33.2923C69.8111 35.2456 66.0474 37.928 62.9059 41.3333C59.7643 44.7401 57.3198 48.6726 55.5754 53.1293C53.8287 57.589 52.9572 62.274 52.9572 67.1813C52.9572 72.1925 53.8287 76.8995 55.5754 81.3069C57.3191 85.7173 59.7636 89.6241 62.9059 93.0293C66.0474 96.4361 69.8119 99.1155 74.201 101.069C78.5885 103.022 83.4247 103.999 88.7131 103.999C92.8016 103.999 96.8667 102.997 100.905 100.994C104.945 98.9911 108.061 96.2359 110.256 92.7282V102.195H126.563V32.1642H110.256V41.6337ZM108.76 75.7472C107.762 78.4531 106.366 80.8078 104.572 82.8112C102.776 84.8161 100.606 86.4183 98.0637 87.6206C95.5202 88.823 92.7004 89.4238 89.6103 89.4238C86.5178 89.4238 83.7252 88.823 81.2324 87.6206C78.7388 86.4183 76.5949 84.8161 74.7998 82.8112C73.004 80.8078 71.6319 78.4531 70.6856 75.7472C69.7356 73.0421 69.2644 70.1868 69.2644 67.1821C69.2644 64.1758 69.7356 61.3205 70.6856 58.6154C71.6319 55.9102 73.004 53.5571 74.7998 51.5522C76.5949 49.5495 78.738 47.9451 81.2324 46.7427C83.7252 45.5404 86.5178 44.9396 89.6103 44.9396C92.7012 44.9396 95.5202 45.5404 98.0637 46.7427C100.606 47.9451 102.776 49.5487 104.572 51.5522C106.367 53.5571 107.762 55.9102 108.76 58.6154C109.756 61.3205 110.256 64.1758 110.256 67.1821C110.256 70.1868 109.756 73.0421 108.76 75.7472Z"
-                            fill="currentColor"
-                        />
-                        <path
-                            d="M242.805 41.6337C240.611 38.1275 237.494 35.3731 233.455 33.3681C229.416 31.3647 225.351 30.3618 221.262 30.3618C215.974 30.3618 211.138 31.3389 206.75 33.2923C202.36 35.2456 198.597 37.928 195.455 41.3333C192.314 44.7401 189.869 48.6726 188.125 53.1293C186.378 57.589 185.507 62.274 185.507 67.1813C185.507 72.1925 186.378 76.8995 188.125 81.3069C189.868 85.7173 192.313 89.6241 195.455 93.0293C198.597 96.4361 202.361 99.1155 206.75 101.069C211.138 103.022 215.974 103.999 221.262 103.999C225.351 103.999 229.416 102.997 233.455 100.994C237.494 98.9911 240.611 96.2359 242.805 92.7282V102.195H259.112V32.1642H242.805V41.6337ZM241.31 75.7472C240.312 78.4531 238.916 80.8078 237.122 82.8112C235.326 84.8161 233.156 86.4183 230.614 87.6206C228.07 88.823 225.251 89.4238 222.16 89.4238C219.068 89.4238 216.275 88.823 213.782 87.6206C211.289 86.4183 209.145 84.8161 207.35 82.8112C205.554 80.8078 204.182 78.4531 203.236 75.7472C202.286 73.0421 201.814 70.1868 201.814 67.1821C201.814 64.1758 202.286 61.3205 203.236 58.6154C204.182 55.9102 205.554 53.5571 207.35 51.5522C209.145 49.5495 211.288 47.9451 213.782 46.7427C216.275 45.5404 219.068 44.9396 222.16 44.9396C225.251 44.9396 228.07 45.5404 230.614 46.7427C233.156 47.9451 235.326 49.5487 237.122 51.5522C238.917 53.5571 240.312 55.9102 241.31 58.6154C242.306 61.3205 242.806 64.1758 242.806 67.1821C242.805 70.1868 242.305 73.0421 241.31 75.7472Z"
-                            fill="currentColor"
-                        />
-                        <path d="M438 -3H421.694V102.197H438V-3Z" fill="currentColor" />
-                        <path d="M139.43 102.197H155.735V48.2834H183.712V32.1665H139.43V102.197Z" fill="currentColor" />
-                        <path
-                            d="M324.49 32.1665L303.995 85.794L283.498 32.1665H266.983L293.748 102.197H314.242L341.006 32.1665H324.49Z"
-                            fill="currentColor"
-                        />
-                        <path
-                            d="M376.571 30.3656C356.603 30.3656 340.797 46.8497 340.797 67.1828C340.797 89.6597 356.094 104 378.661 104C391.29 104 399.354 99.1488 409.206 88.5848L398.189 80.0226C398.183 80.031 389.874 90.9895 377.468 90.9895C363.048 90.9895 356.977 79.3111 356.977 73.269H411.075C413.917 50.1328 398.775 30.3656 376.571 30.3656ZM357.02 61.0967C357.145 59.7487 359.023 43.3761 376.442 43.3761C393.861 43.3761 395.978 59.7464 396.099 61.0967H357.02Z"
-                            fill="currentColor"
-                        />
-                    </svg>
-                    <svg
-                        class="relative -mt-[4.9rem] -ml-8 w-[448px] max-w-none lg:-mt-[6.6rem] lg:ml-0 dark:hidden"
-                        viewBox="0 0 440 376"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <g class="translate-y-0 opacity-100 transition-all delay-300 duration-750 starting:translate-y-4 starting:opacity-0">
-                            <path
-                                d="M188.263 355.73L188.595 355.73C195.441 348.845 205.766 339.761 219.569 328.477C232.93 317.193 242.978 308.205 249.714 301.511C256.34 294.626 260.867 287.358 263.296 279.708C265.725 272.058 264.565 264.121 259.816 255.896C254.516 246.716 247.062 239.352 237.454 233.805C227.957 228.067 217.908 225.198 207.307 225.198C196.927 225.197 190.136 227.97 186.934 233.516C183.621 238.872 184.726 246.331 190.247 255.894L125.647 255.891C116.371 239.825 112.395 225.481 113.72 212.858C115.265 200.235 121.559 190.481 132.602 183.596C143.754 176.52 158.607 172.982 177.159 172.983C196.594 172.984 215.863 176.523 234.968 183.6C253.961 190.486 271.299 200.241 286.98 212.864C302.661 225.488 315.14 239.833 324.416 255.899C333.03 270.817 336.841 283.918 335.847 295.203C335.075 306.487 331.376 316.336 324.75 324.751C318.346 333.167 308.408 343.494 294.936 355.734L377.094 355.737L405.917 405.656L217.087 405.649L188.263 355.73Z"
-                                fill="black"
-                            />
-                            <path
-                                d="M9.11884 226.339L-13.7396 226.338L-42.7286 176.132L43.0733 176.135L175.595 405.649L112.651 405.647L9.11884 226.339Z"
-                                fill="black"
-                            />
-                            <path
-                                d="M188.263 355.73L188.595 355.73C195.441 348.845 205.766 339.761 219.569 328.477C232.93 317.193 242.978 308.205 249.714 301.511C256.34 294.626 260.867 287.358 263.296 279.708C265.725 272.058 264.565 264.121 259.816 255.896C254.516 246.716 247.062 239.352 237.454 233.805C227.957 228.067 217.908 225.198 207.307 225.198C196.927 225.197 190.136 227.97 186.934 233.516C183.621 238.872 184.726 246.331 190.247 255.894L125.647 255.891C116.371 239.825 112.395 225.481 113.72 212.858C115.265 200.235 121.559 190.481 132.602 183.596C143.754 176.52 158.607 172.982 177.159 172.983C196.594 172.984 215.863 176.523 234.968 183.6C253.961 190.486 271.299 200.241 286.98 212.864C302.661 225.488 315.14 239.833 324.416 255.899C333.03 270.817 336.841 283.918 335.847 295.203C335.075 306.487 331.376 316.336 324.75 324.751C318.346 333.167 308.408 343.494 294.936 355.734L377.094 355.737L405.917 405.656L217.087 405.649L188.263 355.73Z"
-                                stroke="#FF750F"
-                                stroke-width="1"
-                            />
-                            <path
-                                d="M9.11884 226.339L-13.7396 226.338L-42.7286 176.132L43.0733 176.135L175.595 405.649L112.651 405.647L9.11884 226.339Z"
-                                stroke="#FF750F"
-                                stroke-width="1"
-                            />
-                            <path
-                                d="M204.592 327.449L204.923 327.449C211.769 320.564 222.094 311.479 235.897 300.196C249.258 288.912 259.306 279.923 266.042 273.23C272.668 266.345 277.195 259.077 279.624 251.427C282.053 243.777 280.893 235.839 276.145 227.615C270.844 218.435 263.39 211.071 253.782 205.524C244.285 199.786 234.236 196.917 223.635 196.916C213.255 196.916 206.464 199.689 203.262 205.235C199.949 210.59 201.054 218.049 206.575 227.612L141.975 227.61C132.699 211.544 128.723 197.2 130.048 184.577C131.593 171.954 137.887 162.2 148.93 155.315C160.083 148.239 174.935 144.701 193.487 144.702C212.922 144.703 232.192 148.242 251.296 155.319C270.289 162.205 287.627 171.96 303.308 184.583C318.989 197.207 331.468 211.552 340.745 227.618C349.358 242.536 353.169 255.637 352.175 266.921C351.403 278.205 347.704 288.055 341.078 296.47C334.674 304.885 324.736 315.213 311.264 327.453L393.422 327.456L422.246 377.375L233.415 377.368L204.592 327.449Z"
-                                fill="#391800"
-                            />
-                            <path
-                                d="M25.447 198.058L2.58852 198.057L-26.4005 147.851L59.4015 147.854L191.923 377.368L128.979 377.365L25.447 198.058Z"
-                                fill="#391800"
-                            />
-                            <path
-                                d="M204.592 327.449L204.923 327.449C211.769 320.564 222.094 311.479 235.897 300.196C249.258 288.912 259.306 279.923 266.042 273.23C272.668 266.345 277.195 259.077 279.624 251.427C282.053 243.777 280.893 235.839 276.145 227.615C270.844 218.435 263.39 211.071 253.782 205.524C244.285 199.786 234.236 196.917 223.635 196.916C213.255 196.916 206.464 199.689 203.262 205.235C199.949 210.59 201.054 218.049 206.575 227.612L141.975 227.61C132.699 211.544 128.723 197.2 130.048 184.577C131.593 171.954 137.887 162.2 148.93 155.315C160.083 148.239 174.935 144.701 193.487 144.702C212.922 144.703 232.192 148.242 251.296 155.319C270.289 162.205 287.627 171.96 303.308 184.583C318.989 197.207 331.468 211.552 340.745 227.618C349.358 242.536 353.169 255.637 352.175 266.921C351.403 278.205 347.704 288.055 341.078 296.47C334.674 304.885 324.736 315.213 311.264 327.453L393.422 327.456L422.246 377.375L233.415 377.368L204.592 327.449Z"
-                                stroke="#FF750F"
-                                stroke-width="1"
-                            />
-                            <path
-                                d="M25.447 198.058L2.58852 198.057L-26.4005 147.851L59.4015 147.854L191.923 377.368L128.979 377.365L25.447 198.058Z"
-                                stroke="#FF750F"
-                                stroke-width="1"
-                            />
-                        </g>
-                        <g
-                            :style="`mixBlendMode: 'plus-darker'`"
-                            class="translate-y-0 opacity-100 transition-all delay-300 duration-750 starting:translate-y-4 starting:opacity-0"
-                        >
-                            <path
-                                d="M230.951 281.792L231.282 281.793C238.128 274.907 248.453 265.823 262.256 254.539C275.617 243.256 285.666 234.267 292.402 227.573C299.027 220.688 303.554 213.421 305.983 205.771C308.412 198.12 307.253 190.183 302.504 181.959C297.203 172.778 289.749 165.415 280.142 159.868C270.645 154.13 260.596 151.26 249.995 151.26C239.615 151.26 232.823 154.033 229.621 159.579C226.309 164.934 227.413 172.393 232.935 181.956L168.335 181.954C159.058 165.888 155.082 151.543 156.407 138.92C157.953 126.298 164.247 116.544 175.289 109.659C186.442 102.583 201.294 99.045 219.846 99.0457C239.281 99.0464 258.551 102.585 277.655 109.663C296.649 116.549 313.986 126.303 329.667 138.927C345.349 151.551 357.827 165.895 367.104 181.961C375.718 196.88 379.528 209.981 378.535 221.265C377.762 232.549 374.063 242.399 367.438 250.814C361.033 259.229 351.095 269.557 337.624 281.796L419.782 281.8L448.605 331.719L259.774 331.712L230.951 281.792Z"
-                                fill="#F3BEC7"
-                            />
-                            <path
-                                d="M51.8063 152.402L28.9479 152.401L-0.0411453 102.195L85.7608 102.198L218.282 331.711L155.339 331.709L51.8063 152.402Z"
-                                fill="#F3BEC7"
-                            />
-                            <path
-                                d="M230.951 281.792L231.282 281.793C238.128 274.907 248.453 265.823 262.256 254.539C275.617 243.256 285.666 234.267 292.402 227.573C299.027 220.688 303.554 213.421 305.983 205.771C308.412 198.12 307.253 190.183 302.504 181.959C297.203 172.778 289.749 165.415 280.142 159.868C270.645 154.13 260.596 151.26 249.995 151.26C239.615 151.26 232.823 154.033 229.621 159.579C226.309 164.934 227.413 172.393 232.935 181.956L168.335 181.954C159.058 165.888 155.082 151.543 156.407 138.92C157.953 126.298 164.247 116.544 175.289 109.659C186.442 102.583 201.294 99.045 219.846 99.0457C239.281 99.0464 258.551 102.585 277.655 109.663C296.649 116.549 313.986 126.303 329.667 138.927C345.349 151.551 357.827 165.895 367.104 181.961C375.718 196.88 379.528 209.981 378.535 221.265C377.762 232.549 374.063 242.399 367.438 250.814C361.033 259.229 351.095 269.557 337.624 281.796L419.782 281.8L448.605 331.719L259.774 331.712L230.951 281.792Z"
-                                stroke="#1B1B18"
-                                stroke-width="1"
-                            />
-                            <path
-                                d="M51.8063 152.402L28.9479 152.401L-0.0411453 102.195L85.7608 102.198L218.282 331.711L155.339 331.709L51.8063 152.402Z"
-                                stroke="#1B1B18"
-                                stroke-width="1"
-                            />
-                        </g>
-                        <g
-                            :style="{ mixBlendMode: 'hard-light' }"
-                            class="translate-y-0 opacity-100 transition-all delay-300 duration-750 starting:translate-y-4 starting:opacity-0"
-                        >
-                            <path
-                                d="M246.544 254.79L246.875 254.79C253.722 247.905 264.046 238.82 277.849 227.537C291.21 216.253 301.259 207.264 307.995 200.57C314.62 193.685 319.147 186.418 321.577 178.768C324.006 171.117 322.846 163.18 318.097 154.956C312.796 145.775 305.342 138.412 295.735 132.865C286.238 127.127 276.189 124.258 265.588 124.257C255.208 124.257 248.416 127.03 245.214 132.576C241.902 137.931 243.006 145.39 248.528 154.953L183.928 154.951C174.652 138.885 170.676 124.541 172 111.918C173.546 99.2946 179.84 89.5408 190.882 82.6559C202.035 75.5798 216.887 72.0421 235.439 72.0428C254.874 72.0435 274.144 75.5825 293.248 82.6598C312.242 89.5457 329.579 99.3005 345.261 111.924C360.942 124.548 373.421 138.892 382.697 154.958C391.311 169.877 395.121 182.978 394.128 194.262C393.355 205.546 389.656 215.396 383.031 223.811C376.627 232.226 366.688 242.554 353.217 254.794L435.375 254.797L464.198 304.716L275.367 304.709L246.544 254.79Z"
-                                fill="#F0ACB8"
-                            />
-                            <path
-                                d="M246.544 254.79L246.875 254.79C253.722 247.905 264.046 238.82 277.849 227.537C291.21 216.253 301.259 207.264 307.995 200.57C314.62 193.685 319.147 186.418 321.577 178.768C324.006 171.117 322.846 163.18 318.097 154.956C312.796 145.775 305.342 138.412 295.735 132.865C286.238 127.127 276.189 124.258 265.588 124.257C255.208 124.257 248.416 127.03 245.214 132.576C241.902 137.931 243.006 145.39 248.528 154.953L183.928 154.951C174.652 138.885 170.676 124.541 172 111.918C173.546 99.2946 179.84 89.5408 190.882 82.6559C202.035 75.5798 216.887 72.0421 235.439 72.0428C254.874 72.0435 274.144 75.5825 293.248 82.6598C312.242 89.5457 329.579 99.3005 345.261 111.924C360.942 124.548 373.421 138.892 382.697 154.958C391.311 169.877 395.121 182.978 394.128 194.262C393.355 205.546 389.656 215.396 383.031 223.811C376.627 232.226 366.688 242.554 353.217 254.794L435.375 254.797L464.198 304.716L275.367 304.709L246.544 254.79Z"
-                                stroke="#1B1B18"
-                                stroke-width="1"
-                                stroke-linejoin="round"
-                            />
-                        </g>
-                        <g
-                            :style="{ mixBlendMode: 'hard-light' }"
-                            class="translate-y-0 opacity-100 transition-all delay-300 duration-750 starting:translate-y-4 starting:opacity-0"
-                        >
-                            <path
-                                d="M67.41 125.402L44.5515 125.401L15.5625 75.1953L101.364 75.1985L233.886 304.712L170.942 304.71L67.41 125.402Z"
-                                fill="#4B0600"
-                            />
-                            <path
-                                d="M67.41 125.402L44.5515 125.401L15.5625 75.1953L101.364 75.1985L233.886 304.712L170.942 304.71L67.41 125.402Z"
-                                stroke="#FF750F"
-                                stroke-width="1"
-                            />
-                        </g>
-                    </svg>
+    <div class="min-h-screen overflow-x-hidden bg-background font-sans text-foreground antialiased">
+        <!-- Navigation -->
+        <nav
+            :class="[
+                'fixed inset-x-0 top-0 z-50 border-b backdrop-blur-xl transition-all',
+                scrolled ? 'bg-background/90 shadow-sm' : 'bg-background/70',
+            ]"
+        >
+            <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
+                <div class="flex items-center space-x-2">
                     <div
-                        class="absolute inset-0 rounded-t-lg shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] lg:overflow-hidden lg:rounded-t-none lg:rounded-r-lg dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]"
+                        class="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary/90 to-primary text-sm font-bold text-primary-foreground shadow"
+                    >
+                        AI
+                    </div>
+                    <div class="flex flex-col leading-tight">
+                        <span class="text-sm font-semibold tracking-tight">PodcastAI</span>
+                        <span class="text-[10px] tracking-wide text-muted-foreground uppercase">Auto Podcast</span>
+                    </div>
+                </div>
+                <!-- Desktop Links -->
+                <div class="hidden items-center space-x-8 text-sm font-medium lg:flex">
+                    <a href="#features" class="text-muted-foreground transition-colors hover:text-foreground">Features</a>
+                    <a href="#how-it-works" class="text-muted-foreground transition-colors hover:text-foreground">How it Works</a>
+                    <a href="#pricing" class="text-muted-foreground transition-colors hover:text-foreground">Pricing</a>
+                    <Link v-if="isAuthenticated" :href="route('dashboard')">
+                        <Button variant="ghost" size="sm">Dashboard</Button>
+                    </Link>
+                    <template v-else>
+                        <Link :href="route('login')"><Button variant="ghost" size="sm">Sign In</Button></Link>
+                        <Link :href="route('register')"
+                            ><Button size="sm" class="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80"
+                                >Get Started</Button
+                            ></Link
+                        >
+                    </template>
+                </div>
+                <!-- Mobile -->
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    class="lg:hidden"
+                    @click="toggleMobile"
+                    aria-label="Toggle navigation"
+                    :aria-expanded="mobileMenuOpen"
+                >
+                    <component :is="mobileMenuOpen ? X : Menu" class="size-5" />
+                </Button>
+            </div>
+            <!-- Mobile Menu -->
+            <transition name="fade">
+                <div v-if="mobileMenuOpen" class="border-t bg-background/95 backdrop-blur-xl lg:hidden">
+                    <div class="space-y-4 px-4 py-4 sm:px-6">
+                        <a href="#features" @click="closeMobile" class="block text-sm font-medium text-muted-foreground hover:text-foreground"
+                            >Features</a
+                        >
+                        <a href="#how-it-works" @click="closeMobile" class="block text-sm font-medium text-muted-foreground hover:text-foreground"
+                            >How it Works</a
+                        >
+                        <a href="#pricing" @click="closeMobile" class="block text-sm font-medium text-muted-foreground hover:text-foreground"
+                            >Pricing</a
+                        >
+                        <div class="space-y-3 pt-2">
+                            <template v-if="isAuthenticated">
+                                <Link :href="route('dashboard')" @click="closeMobile"
+                                    ><Button variant="outline" class="w-full">Dashboard</Button></Link
+                                >
+                            </template>
+                            <template v-else>
+                                <Link :href="route('login')" @click="closeMobile"><Button variant="ghost" class="w-full">Sign In</Button></Link>
+                                <Link :href="route('register')" @click="closeMobile"
+                                    ><Button class="w-full bg-gradient-to-r from-primary to-primary/90">Get Started</Button></Link
+                                >
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+        </nav>
+
+        <!-- Hero -->
+        <section class="relative flex min-h-screen items-center justify-center px-4 pt-24 sm:px-6">
+            <!-- Background blobs -->
+            <div class="pointer-events-none absolute inset-0">
+                <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-secondary/5"></div>
+                <div
+                    class="absolute top-32 left-4 h-48 w-48 animate-pulse rounded-full bg-gradient-to-br from-primary/20 to-primary/5 blur-3xl sm:left-16 sm:h-64 sm:w-64"
+                ></div>
+                <div
+                    class="absolute top-48 right-4 h-64 w-64 animate-pulse rounded-full bg-gradient-to-br from-secondary/20 to-accent/10 blur-3xl delay-1000 sm:right-20 sm:h-80 sm:w-80"
+                ></div>
+                <div
+                    class="absolute bottom-32 left-1/4 h-56 w-56 animate-pulse rounded-full bg-gradient-to-br from-accent/20 to-primary/10 blur-3xl delay-2000 sm:h-72 sm:w-72"
+                ></div>
+                <div
+                    class="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,.04)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,.04)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_70%_40%_at_50%_0%,#000_55%,transparent_100%)] bg-[size:48px_48px] sm:bg-[size:64px_64px] dark:opacity-40"
+                ></div>
+            </div>
+            <div class="relative z-10 mx-auto max-w-5xl space-y-6 text-center sm:space-y-8">
+                <div class="animate-fade-in-up flex justify-center" style="animation-delay: 0.1s">
+                    <div
+                        class="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-background/70 px-4 py-2 text-xs font-medium backdrop-blur-sm sm:text-sm"
+                    >
+                        <Podcast class="size-4 text-primary" /> <span class="tracking-wide">AI Powered Conversations</span>
+                    </div>
+                </div>
+                <div class="animate-fade-in-up space-y-4" style="animation-delay: 0.2s">
+                    <h1 class="text-3xl leading-tight font-bold tracking-tight sm:text-5xl md:text-6xl">
+                        Generate Multi‑Host Podcasts
+                        <span class="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">In Minutes</span>
+                    </h1>
+                    <div class="mx-auto h-1 w-24 rounded-full bg-gradient-to-r from-primary to-primary/50"></div>
+                </div>
+                <div class="animate-fade-in-up mx-auto max-w-3xl" style="animation-delay: 0.3s">
+                    <p class="text-base leading-relaxed text-muted-foreground sm:text-lg md:text-xl">
+                        Provide a topic or notes and our AI writes natural dialogue between hosts, voices it, mixes it, and gives you a publish‑ready
+                        episode.
+                    </p>
+                </div>
+                <div class="animate-fade-in-up flex flex-col items-center justify-center gap-4 sm:flex-row" style="animation-delay: 0.4s">
+                    <Link :href="isAuthenticated ? route('dashboard') : route('register')">
+                        <Button
+                            size="lg"
+                            class="w-full bg-gradient-to-r from-primary to-primary/90 px-8 py-6 text-base font-semibold shadow-lg hover:from-primary/90 hover:to-primary/80 hover:shadow-xl sm:w-auto"
+                            >Get Started</Button
+                        >
+                    </Link>
+                    <Button
+                        size="lg"
+                        variant="outline"
+                        class="w-full border-2 px-8 py-6 text-base font-semibold hover:border-primary/50 hover:bg-primary/5 sm:w-auto"
+                    >
+                        <Play class="mr-2 size-5" /> Listen to Demo
+                    </Button>
+                </div>
+                <!-- trust indicators placeholder -->
+                <div
+                    class="animate-fade-in-up flex flex-wrap justify-center gap-6 text-xs text-muted-foreground sm:text-sm"
+                    style="animation-delay: 0.5s"
+                >
+                    <div class="h-6 w-24 rounded bg-muted/40" />
+                    <div class="h-6 w-24 rounded bg-muted/40" />
+                    <div class="h-6 w-24 rounded bg-muted/40" />
+                </div>
+            </div>
+            <!-- Scroll cue -->
+            <div
+                class="absolute bottom-6 left-1/2 flex -translate-x-1/2 animate-bounce flex-col items-center text-muted-foreground"
+                aria-hidden="true"
+            >
+                <span class="mb-1 text-xs font-medium">Explore Features</span>
+                <ChevronDown class="size-4" />
+            </div>
+        </section>
+
+        <!-- Stats (placeholders) -->
+        <section class="animate-fade-in-up bg-gradient-to-r from-muted/30 via-background to-muted/30 px-4 py-16 sm:px-6">
+            <div class="mx-auto grid max-w-7xl grid-cols-2 gap-8 md:grid-cols-4">
+                <div v-for="i in 4" :key="'stat-' + i" class="space-y-2 text-center">
+                    <div class="mx-auto h-8 w-8 rounded-full bg-primary/10" />
+                    <div class="mx-auto h-4 w-24 rounded bg-muted/50" />
+                    <div class="mx-auto h-3 w-20 rounded bg-muted/30" />
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section id="features" class="animate-fade-in-up relative px-4 py-20 sm:px-6">
+            <div class="absolute inset-0 bg-gradient-to-b from-background via-muted/10 to-background" />
+            <div class="relative mx-auto max-w-7xl">
+                <div class="mb-16 space-y-4 text-center">
+                    <div class="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm"><Zap class="size-3" /> Powerful Features</div>
+                    <h2 class="text-3xl font-bold tracking-tight md:text-4xl">Everything You Need to Create</h2>
+                    <p class="mx-auto max-w-2xl text-muted-foreground">
+                        Our AI platform handles the heavy lifting so you can focus on ideas & distribution.
+                    </p>
+                </div>
+                <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <Card
+                        v-for="n in 6"
+                        :key="'feature-' + n"
+                        class="group min-h-52 border bg-gradient-to-br from-background to-muted/20 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg"
                     />
                 </div>
-            </main>
-        </div>
-        <div class="hidden h-14.5 lg:block"></div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section id="how-it-works" class="animate-fade-in-up bg-gradient-to-br from-primary/5 via-background to-secondary/5 px-4 py-20 sm:px-6">
+            <div class="mx-auto max-w-7xl">
+                <div class="mb-16 space-y-4 text-center">
+                    <div class="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm"><Target class="size-3" /> Simple Process</div>
+                    <h2 class="text-3xl font-bold tracking-tight md:text-4xl">From Idea to Podcast</h2>
+                    <p class="mx-auto max-w-2xl text-muted-foreground">Three streamlined steps turn your concept into a polished episode.</p>
+                </div>
+                <div class="mb-16 grid gap-12 sm:grid-cols-3">
+                    <div v-for="s in 3" :key="'step-' + s" class="space-y-4 text-center">
+                        <div
+                            class="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/70 font-bold text-primary-foreground"
+                        >
+                            {{ s }}
+                        </div>
+                        <div class="mx-auto h-4 w-32 rounded bg-muted/50" />
+                        <div class="mx-auto h-3 w-40 rounded bg-muted/30" />
+                    </div>
+                </div>
+                <Card class="mx-auto max-w-4xl border bg-gradient-to-br from-background to-muted/20 shadow-xl">
+                    <div class="space-y-6 px-6 py-10 text-center md:px-10">
+                        <div class="mx-auto h-6 w-40 rounded bg-muted/40" />
+                        <div class="mx-auto h-10 w-full max-w-xl rounded-lg bg-muted/20" />
+                        <div class="grid gap-4 sm:grid-cols-3">
+                            <div class="h-12 rounded bg-muted/20" />
+                            <div class="h-12 rounded bg-muted/20" />
+                            <div class="h-12 rounded bg-muted/20" />
+                        </div>
+                        <div class="flex justify-center"><Button disabled size="lg" class="opacity-60">Generate Sample</Button></div>
+                    </div>
+                </Card>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="animate-fade-in-up relative overflow-hidden px-4 py-20 sm:px-6">
+            <div class="absolute inset-0 bg-gradient-to-r from-primary/5 via-background to-secondary/5" />
+            <div class="absolute top-0 left-1/4 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+            <div class="absolute right-1/4 bottom-0 h-64 w-64 rounded-full bg-secondary/10 blur-3xl" />
+            <div class="relative mx-auto max-w-7xl">
+                <div class="mb-16 space-y-4 text-center">
+                    <div class="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm"><Radio class="size-3" /> Success Stories</div>
+                    <h2 class="text-3xl font-bold tracking-tight md:text-4xl">Loved by Creators</h2>
+                    <p class="mx-auto max-w-2xl text-muted-foreground">Creators of all sizes accelerate content pipelines with PodcastAI.</p>
+                </div>
+                <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <Card
+                        v-for="t in 3"
+                        :key="'test-' + t"
+                        class="group min-h-60 border bg-gradient-to-br from-background to-muted/20 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg"
+                    />
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="animate-fade-in-up relative overflow-hidden px-4 py-20 sm:px-6">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-secondary/10" />
+            <div class="absolute top-1/2 left-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl" />
+            <div class="relative mx-auto max-w-4xl text-center">
+                <div
+                    class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-lg"
+                >
+                    <Podcast class="size-8" />
+                </div>
+                <h2 class="mb-4 text-3xl font-bold md:text-4xl">Ready to Create Your First <span class="text-primary">AI Podcast?</span></h2>
+                <p class="mx-auto mb-8 max-w-2xl leading-relaxed text-muted-foreground">
+                    Join creators using PodcastAI to bring ideas to life and reach new audiences.
+                </p>
+                <div class="mb-8 flex flex-col justify-center gap-4 sm:flex-row">
+                    <Link :href="isAuthenticated ? route('dashboard') : route('register')"
+                        ><Button size="lg" class="bg-gradient-to-r from-primary to-primary/90 px-8 hover:from-primary/90 hover:to-primary/80"
+                            >Start Free Trial <ArrowRight class="ml-2 size-4" /></Button
+                    ></Link>
+                    <a href="#pricing"
+                        ><Button size="lg" variant="outline" class="border-2 px-8 hover:bg-primary hover:text-primary-foreground"
+                            >View Pricing Plans</Button
+                        ></a
+                    >
+                </div>
+                <div class="flex flex-wrap justify-center gap-6 text-xs text-muted-foreground">
+                    <div class="h-4 w-24 rounded bg-muted/40" />
+                    <div class="h-4 w-24 rounded bg-muted/40" />
+                    <div class="h-4 w-24 rounded bg-muted/40" />
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t bg-gradient-to-br from-muted/20 to-background px-4 py-14 text-sm sm:px-6">
+            <div class="mx-auto max-w-7xl space-y-10">
+                <div class="grid grid-cols-2 gap-8 md:grid-cols-5">
+                    <div class="col-span-2 space-y-4">
+                        <div class="flex items-center space-x-2">
+                            <div
+                                class="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary/90 to-primary text-sm font-bold text-primary-foreground shadow"
+                            >
+                                AI
+                            </div>
+                            <span class="font-semibold tracking-tight">PodcastAI</span>
+                        </div>
+                        <p class="max-w-sm text-sm text-muted-foreground">
+                            AI generated multi‑host podcast episodes. Script, voices, music & mix in one platform.
+                        </p>
+                    </div>
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-semibold">Product</h3>
+                        <ul class="space-y-2 text-muted-foreground">
+                            <li><a href="#features" class="hover:text-foreground">Features</a></li>
+                            <li><a href="#how-it-works" class="hover:text-foreground">How it works</a></li>
+                            <li><a href="#pricing" class="hover:text-foreground">Pricing</a></li>
+                        </ul>
+                    </div>
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-semibold">Company</h3>
+                        <ul class="space-y-2 text-muted-foreground">
+                            <li><a href="#" class="hover:text-foreground">About</a></li>
+                            <li><a href="#" class="hover:text-foreground">Blog</a></li>
+                            <li><a href="#" class="hover:text-foreground">Careers</a></li>
+                        </ul>
+                    </div>
+                    <div class="space-y-3">
+                        <h3 class="text-sm font-semibold">Legal</h3>
+                        <ul class="space-y-2 text-muted-foreground">
+                            <li><a href="#" class="hover:text-foreground">Terms</a></li>
+                            <li><a href="#" class="hover:text-foreground">Privacy</a></li>
+                            <li><a href="#" class="hover:text-foreground">Cookies</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center justify-between border-t pt-6 text-xs text-muted-foreground sm:flex-row">
+                    <p>&copy; 2025 PodcastAI. All rights reserved.</p>
+                    <div class="mt-4 flex gap-4 sm:mt-0">
+                        <a href="#" class="hover:text-foreground">Docs</a>
+                        <a href="#" class="hover:text-foreground">Status</a>
+                        <a href="#" class="hover:text-foreground">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </div>
 </template>
+
+<style scoped>
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
+    opacity: 0;
+}
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+</style>
