@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('duration_minutes')->nullable();
             $table->string('status')->default('draft');
             $table->boolean('file_uploaded')->default(false);
+            $table->boolean('raw_text_uploaded')->default(false);
             $table->boolean('script_ready')->default(false);
             $table->boolean('audio_ready')->default(false);
             $table->timestamp('completed_at')->nullable();

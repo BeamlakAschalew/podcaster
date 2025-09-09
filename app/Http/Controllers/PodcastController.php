@@ -7,7 +7,6 @@ use App\Models\PodcastFile;
 use App\Models\PodcastScript;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -15,10 +14,10 @@ class PodcastController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
         return Inertia::render('podcasts/Index', [
-            'podcasts' => Podcast::where('user_id', Auth::id())->latest()->get(),
+            'podcasts' => Podcast::where('user_id', $request->user())->latest()->get(),
         ]);
     }
 
@@ -39,7 +38,7 @@ class PodcastController extends Controller
             'source_text' => ['nullable', 'string'],
         ]);
 
-        $data['user_id'] = Auth::id();
+        $data['user_id'] = $request->user()->id;
         $podcast = Podcast::create($data);
 
         // If they provided source text, create initial script record
@@ -49,7 +48,6 @@ class PodcastController extends Controller
                 'speaker' => 'Host',
                 'raw_text' => $request->string('source_text'),
                 'final_text' => null,
-                'order' => 1,
             ]);
         }
 
@@ -72,10 +70,13 @@ class PodcastController extends Controller
 
     public function show(Podcast $podcast): Response
     {
-        $this->authorize('view', $podcast);
+        // $this->authorize('view', $podcast);
+
+        $script = PodcastScript::where('podcast_id', $podcast->id)->first();
 
         return Inertia::render('podcasts/Show', [
             'podcast' => $podcast,
+            'script' => $script,
         ]);
     }
 }

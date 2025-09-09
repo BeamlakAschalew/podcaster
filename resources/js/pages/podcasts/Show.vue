@@ -1,14 +1,18 @@
 <script setup lang="ts">
+import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
-import { Head, usePage } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
+import { Wand2 } from 'lucide-vue-next';
 
-const page = usePage();
-const podcast = page.props.podcast as any;
+const props = defineProps<{
+    podcast: any;
+    script: any;
+}>();
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Podcasts', href: '/podcasts' },
-    { title: podcast.title, href: `/podcasts/${podcast.slug}` },
+    { title: props.podcast.title, href: `/podcasts/${props.podcast.slug}` },
 ];
 </script>
 
@@ -49,7 +53,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             class="flex flex-col gap-1 rounded-md border p-4"
                             :class="podcast.script_ready ? 'border-emerald-500/40 bg-emerald-500/5' : ''"
                         >
-                            <span class="font-medium">Script</span>
+                            <span class="font-medium">Final Script</span>
                             <span
                                 class="text-xs"
                                 :class="podcast.script_ready ? 'text-emerald-600 dark:text-emerald-500' : 'text-muted-foreground'"
@@ -64,6 +68,26 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <span class="text-xs" :class="podcast.audio_ready ? 'text-emerald-600 dark:text-emerald-500' : 'text-muted-foreground'">{{
                                 podcast.audio_ready ? 'Ready' : 'Pending'
                             }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid gap-4 text-sm md:grid-cols-2">
+                    <div class="flex flex-col gap-1 rounded-md border p-4" :class="script.raw_text ? 'border-emerald-500/40 bg-emerald-500/5' : ''">
+                        <span class="font-medium">Raw text</span>
+                        <span class="text-xs" :class="script.raw_text ? 'text-emerald-600 dark:text-emerald-500' : 'text-muted-foreground'">{{
+                            script.raw_text
+                        }}</span>
+                    </div>
+                    <div class="flex flex-col gap-1 rounded-md border p-4" :class="script.final_text ? 'border-emerald-500/40 bg-emerald-500/5' : ''">
+                        <span class="font-medium">AI final text</span>
+                        <div v-if="script.final_text" class="text-xs text-emerald-600 dark:text-emerald-500">
+                            {{ script.final_text }}
+                        </div>
+                        <div v-else class="flex items-center justify-center pt-1">
+                            <Button size="sm" variant="secondary" class="w-fit">
+                                <Wand2 />
+                                Generate
+                            </Button>
                         </div>
                     </div>
                 </div>

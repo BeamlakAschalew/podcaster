@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "/usr/bin/php8.4",
+            "args": [
+                "/home/beamlak/Documents/web/phplaravel/podcaster/artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}

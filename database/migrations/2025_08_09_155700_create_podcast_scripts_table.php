@@ -14,9 +14,7 @@ return new class extends Migration
         Schema::create('podcast_scripts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('podcast_id')->constrained()->onDelete('cascade');
-            $table->string('speaker');
-            $table->unsignedInteger('order')->default(1);
-            $table->unique(['podcast_id', 'order']);
+            $table->string('speaker')->nullable();
             $table->longText('raw_text')->nullable();
             $table->longText('final_text')->nullable();
             $table->timestamps();

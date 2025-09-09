@@ -6,13 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class PodcastScript extends Model
 {
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            if (is_null($model->order)) {
-                $model->order = static::where('podcast_id', $model->podcast_id)->max('order') + 1;
-            }
-        });
-    }
+    protected $fillable = [
+        'podcast_id',
+        'raw_text',
+        'final_text',
+        'speaker',
+    ];
 }
